@@ -73,10 +73,10 @@ public class NioServer {
 
         } else if (selectionKey.isReadable()) {
             System.out.println("通道已准备好进行读取");
-                // 有消息进来
+            // 有消息进来
 
-                ByteBuffer byteBuffer = ByteBuffer.allocate(100);
-                SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(100);
+            SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 
 /*
             Socket socket = socketChannel.socket();
@@ -87,56 +87,56 @@ public class NioServer {
 */
 
 
-               try {
-                    int len = socketChannel.read(byteBuffer);
+            try {
+                int len = socketChannel.read(byteBuffer);
 
-                    // 如果len>0，表示有输入。如果len==0, 表示输入结束。需要关闭 socketChannel
-                    if (len > 0) {
+                // 如果len>0，表示有输入。如果len==0, 表示输入结束。需要关闭 socketChannel
+                if (len > 0) {
 
-                        byteBuffer.flip();
-                        String msg = charsetDecoder.decode(byteBuffer).toString();
+                    byteBuffer.flip();
+                    String msg = charsetDecoder.decode(byteBuffer).toString();
 
-                        // 根据客户端的消息，查找到对应的输出
-                        String newMsg = "";//talks.getProperty(msg);
-                        if (newMsg == null)
-                            newMsg = "Sorry? I don't understand your message. ";
+                    // 根据客户端的消息，查找到对应的输出
+                    String newMsg = "";//talks.getProperty(msg);
+                    if (newMsg == null)
+                        newMsg = "Sorry? I don't understand your message. ";
 
-                        // UTF-8 格式输出到客户端，并输出一个'n'
+                    // UTF-8 格式输出到客户端，并输出一个'n'
 
-                        socketChannel.write(charsetEncoder.encode(CharBuffer.wrap(newMsg + "\n")));
-                        p(selectionKey.attachment() + "\t[recieved]: " + msg + " ----->\t[send]: " + newMsg);
+                    socketChannel.write(charsetEncoder.encode(CharBuffer.wrap(newMsg + "\n")));
+                    p(selectionKey.attachment() + "\t[recieved]: " + msg + " ----->\t[send]: " + newMsg);
 
-                    } else {
-                        // 输入结束，关闭 socketChannel
-                        p(selectionKey.attachment() + "read finished. close socketChannel. ");
-                        socketChannel.close();
-                    }
-
-                } catch (Exception e) {
-
-                    // 如果read抛出异常，表示连接异常中断，需要关闭 socketChannel
-                    e.printStackTrace();
-
-                    p(selectionKey.attachment() + "socket closed? ");
+                } else {
+                    // 输入结束，关闭 socketChannel
+                    p(selectionKey.attachment() + "read finished. close socketChannel. ");
                     socketChannel.close();
-                }finally {
-                   socketChannel.close();
-               }
+                }
 
-            } else if (selectionKey.isWritable()) {
-                p(selectionKey.attachment() + "TODO: isWritable() ???????????????????????????? ");
-            } else if (selectionKey.isConnectable()) {
-                p(selectionKey.attachment() + "TODO: isConnectable() ????????????????????????? ");
-            } else {
-                p(selectionKey.attachment() + "TODO: else. ");
+            } catch (Exception e) {
+
+                // 如果read抛出异常，表示连接异常中断，需要关闭 socketChannel
+                e.printStackTrace();
+
+                p(selectionKey.attachment() + "socket closed? ");
+                socketChannel.close();
+            } finally {
+                socketChannel.close();
             }
-        }
 
+        } else if (selectionKey.isWritable()) {
+            p(selectionKey.attachment() + "TODO: isWritable() ???????????????????????????? ");
+        } else if (selectionKey.isConnectable()) {
+            p(selectionKey.attachment() + "TODO: isConnectable() ????????????????????????? ");
+        } else {
+            p(selectionKey.attachment() + "TODO: else. ");
+        }
+    }
 
 
     private void p(String s) {
         System.out.println(s);
     }
+
     public static void main(String[] args) throws Exception {
         NioServer nioServer = new NioServer();
     }
