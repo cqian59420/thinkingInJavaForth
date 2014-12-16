@@ -53,7 +53,7 @@ public class NioServer {
     private void handleSelectedKeys(SelectionKey selectionKey) throws Exception {
 
         if (selectionKey.isAcceptable()) {
-            System.out.println("有请求过来了");
+            System.out.println("通道已准备好接受新的套接字连接");
             clientCount++;
 
             ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
@@ -72,13 +72,22 @@ public class NioServer {
             key.attach("第 " + clientCount + " 个客户端 [" + socket.getRemoteSocketAddress() + "]: ");
 
         } else if (selectionKey.isReadable()) {
-
+            System.out.println("通道已准备好进行读取");
                 // 有消息进来
 
                 ByteBuffer byteBuffer = ByteBuffer.allocate(100);
                 SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 
-                try {
+/*
+            Socket socket = socketChannel.socket();
+            InputStream is = socket.getInputStream();
+            byte[] b = new byte[1024];
+            int n = is.read(b);
+            System.out.println(new String(b,0,n));
+*/
+
+
+               try {
                     int len = socketChannel.read(byteBuffer);
 
                     // 如果len>0，表示有输入。如果len==0, 表示输入结束。需要关闭 socketChannel
@@ -110,7 +119,9 @@ public class NioServer {
 
                     p(selectionKey.attachment() + "socket closed? ");
                     socketChannel.close();
-                }
+                }finally {
+                   socketChannel.close();
+               }
 
             } else if (selectionKey.isWritable()) {
                 p(selectionKey.attachment() + "TODO: isWritable() ???????????????????????????? ");

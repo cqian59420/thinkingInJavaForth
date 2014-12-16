@@ -43,7 +43,18 @@ public class MyClient {
 
     @Test
     public void start(){
-        sendMessage("127.0.0.1",10001,"你们好啊");
+        for (int i = 0; i <10000 ; i++) {
+            final int finalI = i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    sendMessage("127.0.0.1",10001,"Thread==="+ finalI +"说：你们好啊");
+                }
+            }).start();
+        }
+
+
+
     }
 
 }
