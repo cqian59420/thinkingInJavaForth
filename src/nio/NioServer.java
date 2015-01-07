@@ -29,6 +29,7 @@ public class NioServer {
     protected CharsetDecoder charsetDecoder = charset.newDecoder();
 
     public NioServer() throws Exception {
+        //静态方法，创建一个selector实例
         selector = Selector.open();
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(port));
@@ -38,7 +39,7 @@ public class NioServer {
         System.out.println("Server：localhost " + port + "开始等待服务请求");
 
         while (true) {
-            // selector 线程。select() 会阻塞，直到有客户端连接，或者有消息读入
+            //selector通过调用select()，将注册的channel中有事件发生的取出来进行处理。监控所有注册的channel，当其中有注册的IO操作可以进行时，该函数返回，并将对应的SelectionKey加入selected-key set。
             selector.select();
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
@@ -61,13 +62,6 @@ public class NioServer {
             socketChannel.configureBlocking(false);
             Socket socket = socketChannel.socket();
 
-/*
-            InputStream is = socket.getInputStream();
-            byte[] b = new byte[1024];
-            int n = is.read(b);
-            System.out.println(new String(b,0,n));
-*/
-
             SelectionKey key = socketChannel.register(selector, SelectionKey.OP_READ);
             key.attach("第 " + clientCount + " 个客户端 [" + socket.getRemoteSocketAddress() + "]: ");
 
@@ -77,15 +71,6 @@ public class NioServer {
 
             ByteBuffer byteBuffer = ByteBuffer.allocate(100);
             SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-
-/*
-            Socket socket = socketChannel.socket();
-            InputStream is = socket.getInputStream();
-            byte[] b = new byte[1024];
-            int n = is.read(b);
-            System.out.println(new String(b,0,n));
-*/
-
 
             try {
                 int len = socketChannel.read(byteBuffer);
@@ -97,7 +82,7 @@ public class NioServer {
                     String msg = charsetDecoder.decode(byteBuffer).toString();
 
                     // 根据客户端的消息，查找到对应的输出
-                    String newMsg = "";//talks.getProperty(msg);
+                    String newMsg = "哈哈";//talks.getProperty(msg);
                     if (newMsg == null)
                         newMsg = "Sorry? I don't understand your message. ";
 
@@ -130,6 +115,7 @@ public class NioServer {
         } else {
             p(selectionKey.attachment() + "TODO: else. ");
         }
+
     }
 
 
