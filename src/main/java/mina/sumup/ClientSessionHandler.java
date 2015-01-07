@@ -19,11 +19,11 @@
    */
  package mina.sumup;
 
+ import mina.sumup.message.AddMessage;
+ import mina.sumup.message.ResultMessage;
  import org.apache.mina.core.service.IoHandler;
  import org.apache.mina.core.service.IoHandlerAdapter;
  import org.apache.mina.core.session.IoSession;
- import org.apache.mina.example.sumup.message.AddMessage;
- import org.apache.mina.example.sumup.message.ResultMessage;
  import org.slf4j.Logger;
  import org.slf4j.LoggerFactory;
   

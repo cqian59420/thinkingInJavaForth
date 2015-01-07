@@ -1,8 +1,8 @@
 package mina.sumup.codec;
 
+  import mina.sumup.message.AbstractMessage;
   import org.apache.mina.core.buffer.IoBuffer;
   import org.apache.mina.core.session.IoSession;
-  import org.apache.mina.example.sumup.message.AbstractMessage;
   import org.apache.mina.filter.codec.ProtocolDecoderOutput;
   import org.apache.mina.filter.codec.demux.MessageDecoder;
   import org.apache.mina.filter.codec.demux.MessageDecoderResult;
